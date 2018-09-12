@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: sample-k8-app
+spec:
+  replicas: 5
+  selector:
+    app: sample-k8-app
+  template:
+    metadata:
+      name: sample-k8-app
+      labels:
+        app: sample-k8-app
+    containers:
+    - name: sample-k8-app
+      image: sushshring/k8-sample
+      imagePullPolicy: Always
+      command: ["/app/main"]
+      ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sample-k8-app
+spec:
+  ports:
+  - port: 8080
+    targetPort: 8080
+  selector:
+    app: sample-k8-app
+  type: LoadBalancer
