@@ -1,4 +1,4 @@
-package K8_Sample
+package main
 
 import (
 	`context`
