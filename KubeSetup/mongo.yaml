@@ -21,6 +21,9 @@ spec:
         ports:
         - containerPort: 27017
           name: web
+        volumeMounts:
+        - name: mongo-persistent-storage
+          mountPath: /data/db
       # This container initializes the mongodb, then sleeps.
       - name: init-mongo
         image: mongo:3.4.1
@@ -34,6 +37,16 @@ spec:
       - name: config
         configMap:
           name: "mongo-init"
+  volumeClaimTemplates:
+  - metadata:
+      name: mongo-persistent-storage
+      annotations:
+        volume.beta.kubernetes.io/storage-class: "fast"
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 100Gi
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -101,3 +114,11 @@ spec:
     port: 27017
     targetPort: 27017
   type: NodePort
+---
+kind: StorageClass  
+apiVersion: storage.k8s.io/v1beta1  
+metadata:  
+ name: fast  
+provisioner: kubernetes.io/gce-pd  
+parameters:  
+ type: pd-ssd

@@ -7,5 +7,5 @@ WORKDIR $GOPATH/src/sushshring/K8_Sample
 RUN go get -d -v
 #build the binary
 RUN go build -o /go/bin/sample
-CMD [ "/bin/sh", "/go/bin/sample" ]
+CMD [ "/go/bin/sample" ]
 EXPOSE 8080
