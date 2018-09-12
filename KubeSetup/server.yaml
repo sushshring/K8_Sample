@@ -11,13 +11,16 @@ spec:
       name: sample-k8-app
       labels:
         app: sample-k8-app
-    containers:
-    - name: sample-k8-app
-      image: sushshring/k8-sample
-      imagePullPolicy: Always
-      command: ["/app/main"]
-      ports:
-        - containerPort: 8080
+    spec:
+      containers:
+      - name: sample-k8-app
+        image: sushshring/k8_sample
+        imagePullPolicy: Always
+        command: ["/app/main"]
+        ports:
+          - containerPort: 8080
+      imagePullSecrets:
+      - name: regcred
 ---
 apiVersion: v1
 kind: Service

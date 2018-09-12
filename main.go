@@ -1,21 +1,21 @@
 package main
 
 import (
-	`context`
+	"context"
 	"fmt"
 	"net/http"
 
-	`github.com/sushshring/K8_Sample/db`
-	`github.com/sushshring/K8_Sample/model`
+	"github.com/sushshring/K8_Sample/db"
+	"github.com/sushshring/K8_Sample/model"
 )
 
 func main() {
-	http.HandleFunc("/", dbConnector(func (w http.ResponseWriter, r *http.Request) {
+	http.HandleFunc("/", dbConnector(func(w http.ResponseWriter, r *http.Request) {
 		request := &model.Request{
 			UserAgent: r.UserAgent(),
-			Method: r.Method,
-			Path: fmt.Sprint(r.URL),
-			Source: r.Host,
+			Method:    r.Method,
+			Path:      fmt.Sprint(r.URL),
+			Source:    r.Host,
 		}
 		if connectedDB := r.Context().Value("db"); connectedDB != nil {
 			if err := connectedDB.(db.DB).AddObject(request, "request"); err != nil {
@@ -32,10 +32,8 @@ func main() {
 	http.HandleFunc("/requests", dbConnector(func(w http.ResponseWriter, r *http.Request) {
 		if connectedDB := r.Context().Value("db"); connectedDB != nil {
 			results := connectedDB.(db.DB).GetAllObjects("request")
-			fmt.Println(results)
 			request := &model.Request{}
 			for results.Next(request) {
-				w.WriteHeader(200)
 				w.Write([]byte(request.String()))
 			}
 			return
