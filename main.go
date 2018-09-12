@@ -45,7 +45,7 @@ func main() {
 		return
 	}))
 
-	if err := http.ListenAndServe(":"+common.GetEnv(PORT, "8080"), nil); err != nil {
+	if err := http.ListenAndServe(":"+common.GetEnv("PORT", "8080"), nil); err != nil {
 		panic(err)
 	}
 }
