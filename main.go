@@ -12,6 +12,7 @@ import (
 )
 
 func main() {
+	fmt.Println("Starting Go server... Listening on port " + common.GetEnv("PORT", "8080"))
 	http.HandleFunc("/", dbConnector(func(w http.ResponseWriter, r *http.Request) {
 		request := &model.Request{
 			UserAgent: r.UserAgent(),
