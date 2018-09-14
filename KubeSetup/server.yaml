@@ -16,7 +16,11 @@ spec:
       - name: sample-k8-app
         image: sushshring/k8_sample
         imagePullPolicy: Always
-        command: ["/app/main"]
+        env:
+        - name: MONGO_DB_HOSTNAME
+          value: "$(MONGO_NODEPORT_SERVICE_HOST):$(MONGO_NODEPORT_SERVICE_PORT)"
+        - name: MONDO_DB_NAME
+          value: "sample_k8_db"
         ports:
           - containerPort: 8080
       imagePullSecrets:

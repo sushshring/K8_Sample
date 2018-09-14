@@ -2,10 +2,9 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: mongo
-  namespace: mongo
 spec:
   serviceName: "mongo"
-  replicas: 3
+  replicas: 1
   template:
     metadata:
       labels:
@@ -36,23 +35,15 @@ spec:
       volumes:
       - name: config
         configMap:
-          name: "mongo-init"
-  volumeClaimTemplates:
-  - metadata:
-      name: mongo-persistent-storage
-      annotations:
-        volume.beta.kubernetes.io/storage-class: "fast"
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 100Gi
+          name: mongo-init
+      - name: mongo-persistent-storage
+        persistentVolumeClaim:
+          claimName: mongo-persistent-storage
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mongo-init
-  namespace: mongo
 data:
   init.sh: |
     #!/bin/bash
@@ -113,12 +104,31 @@ spec:
   - protocol: TCP
     port: 27017
     targetPort: 27017
-  type: NodePort
+  type: ClusterIP
 ---
-kind: StorageClass  
-apiVersion: storage.k8s.io/v1beta1  
-metadata:  
- name: fast  
-provisioner: kubernetes.io/gce-pd  
-parameters:  
- type: pd-ssd
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: mongo-persistent-storage
+  namespace: mongo
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/mongo"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: mongo-persistent-storage
+  namespace: mongo
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 1Gi
