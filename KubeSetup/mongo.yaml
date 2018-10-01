@@ -2,6 +2,7 @@ apiVersion: apps/v1beta1
 kind: StatefulSet
 metadata:
   name: mongo
+  namespace: default
 spec:
   serviceName: "mongo"
   replicas: 1
@@ -110,7 +111,7 @@ kind: PersistentVolume
 apiVersion: v1
 metadata:
   name: mongo-persistent-storage
-  namespace: mongo
+  namespace: default
 spec:
   storageClassName: manual
   capacity:
@@ -124,7 +125,7 @@ kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: mongo-persistent-storage
-  namespace: mongo
+  namespace: default
 spec:
   accessModes:
     - ReadWriteOnce

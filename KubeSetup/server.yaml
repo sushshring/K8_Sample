@@ -36,4 +36,4 @@ spec:
     targetPort: 8080
   selector:
     app: sample-k8-app
-  type: LoadBalancer
+  type: NodePort
